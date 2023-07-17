@@ -101,7 +101,8 @@ sequence_query.node_sequence.append(SequenceCriteriaModel(name='Manufacturer'))
 sequence_query.relationship_sequence.append(SequenceCriteriaModel()) # a relationship with no criteria
 sequence_query.node_sequence.append(SequenceCriteriaModel() # a node with no criteria specified
 sequence_query.relationship_sequence.append(SequenceCriteriaModel()) #a realtoinship with no criteria
-sequence_query.node_sequence.append(SequenceCriteriaModel(component_type="widget", include_with_return=True)
+sequence_query.node_sequence.append(SequenceCriteriaModel(component_type="widget", 
+                                                          include_with_return=True))
 ```
 + The sequence query must always have 1 more node than relationship.
 + The order is important, and is a sequence. node - relationship - node - relationship - node
