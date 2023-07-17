@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "pydantic-neo4j"
+version = "0.1.1"
+description = ""
+authors = ["MichaelZag <Michael@MichaelZag.com>"]
+readme = "README.md"
+license = "MIT"
+homepage = 'https://github.com/Michaelzag/PydanticNeo4j'
+repository = 'https://github.com/Michaelzag/PydanticNeo4j'
+keywords = ['neo4j-pydantic','Pydantic', 'Neo4j', 'OGM', 'Neo4j-OG','MichaelZag']
+packages = [
+    { include = "pydantic-neo4j" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.0.3"
+neo4j = "^5.10.0"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
