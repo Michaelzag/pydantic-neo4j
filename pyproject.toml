@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pydantic-neo4j"
-version = "0.1.1"
+version = "0.2.0"
 description = ""
 authors = ["MichaelZag <Michael@MichaelZag.com>"]
 readme = "README.md"
@@ -9,7 +9,7 @@ homepage = 'https://github.com/Michaelzag/PydanticNeo4j'
 repository = 'https://github.com/Michaelzag/PydanticNeo4j'
 keywords = ['neo4j-pydantic','Pydantic', 'Neo4j', 'OGM', 'Neo4j-OG','MichaelZag']
 packages = [
-    { include = "pydantic-neo4j" },
+    { include = "pydantic_neo4j" },
 ]
 
 [tool.poetry.dependencies]
