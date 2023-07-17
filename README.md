@@ -1,15 +1,15 @@
 
 
-### Purpose of the Package
+## Purpose of the Package
 + To translate from Pydantic models to Neo4j Graphs
 
-### Getting Started
+## Getting Started
 + Install the package
 ```bash
 pip install pydantic-neo4j
 ```
 
-### Usage
+## Usage
 + Import the package and models
 ```python
 from pydantic_neo4j import (PydanticNeo4j, 
@@ -19,6 +19,7 @@ from pydantic_neo4j import (PydanticNeo4j,
                             SequenceQueryModel, 
                             SequenceNodeModel)
 ```
+___
 + Initialize the class and get the utilities
 ```python
 
@@ -27,6 +28,7 @@ match_util = pydantic_neo4j.match_utilities
 create_util = pydantic_neo4j.create_utilities
 database_operations = pydantic_neo4j.database_operations
 ```
+___
 + Create some Pydantic models
 ```python
 class Manufacturer(NodeModel):
@@ -44,8 +46,7 @@ class IsOrderable(RelationshipModel):
 class Produces(RelationshipModel):
     design_revision: int
 ```
-
-
+___
 + Create the nodes and relationships. All relationships must have a start_node and end_node
 ```python
 relationships = []
@@ -70,16 +71,17 @@ relationships.append(is_orderable)
 ```python
 await create_util.create_relationships(relationships=relationships)
 ````
+___
 + Query the graph for a single node. Lets find a manufacturer
 ```python
 nodes = await match_util.node_query(node_name='Manufacturer')
-
+___
 ```
 + Query the graph for multiple nodes. Lets find all nodes that are active
 ```python
 nodes = await match_util.node_query(criteria={'active': True})
 ```
-
+___
 + Query the graph for a single relationship. Lets find a manufacturer that produces a red design
 ```python
 query = RelationshipQueryModel(
@@ -91,7 +93,7 @@ query = RelationshipQueryModel(
     relationship_criteria={})
 result = await match_util.match_relationship(query=query)
 ```
-
+___
 + Query the graph for multiple relationships. Lets find all manufacturers that make a widget component
 + This uses a sequence, which is a series of relationships. Similar to Neo4j Path
 ```python
@@ -109,7 +111,7 @@ sequence_query.node_sequence.append(SequenceCriteriaModel(component_type="widget
 ```python
 result = await match_util.sequence_query(sequence_query=sequence_query)
 ```
-
+___
 + Run a specific query, lets delete everything
 ```python
 await database_operations.run_query(query=f"match (n) detach delete n")
@@ -126,6 +128,7 @@ for graph_id, node in nodes.items():
     node.name = "Acme2"
     await create_util.update_node(node=node)
 ```
+___
 + Update a relationship
 ```python
     query = RelationshipQueryModel(
@@ -140,7 +143,7 @@ for graph_id, node in nodes.items():
         relationship.design_revision = 4
         await create_util.update_relationship(relationship=relationship)
 ```
-
+___
 + Delete a node
 ```python
 nodes = await match_util.node_query(name='Manufacturer', criteria={name='Acme'})
