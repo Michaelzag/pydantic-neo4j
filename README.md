@@ -6,7 +6,7 @@
 ### Getting Started
 + Install the package
 ```bash
-pip install PydanticNeo4j
+pip install pydantic-neo4j
 ```
 
 ### Usage
