@@ -30,7 +30,6 @@ class Neo4jModel(BaseModel):
                 fields[field] = getattr(self, field)
         return fields
 
-
     def get_identifying_fields(self) -> Dict[str, Union[uuid.UUID]]:
         fields = {}
         for field, value in self.__class__.model_fields.items():
@@ -75,9 +74,18 @@ class SequenceCriteriaModel(BaseModel):
     include_with_return: Optional[bool] = Field(default=False)
 
 
+class SequenceCriteriaNodeModel(SequenceCriteriaModel):
+    pass
+
+
+class SequenceCriteriaRelationshipModel(SequenceCriteriaModel):
+    from_symbol: str = Field(default="-")
+    to_symbol: str = Field(default="-")
+
+
 class SequenceQueryModel(BaseModel):
-    node_sequence: Optional[list[SequenceCriteriaModel]] = Field(default_factory=list)
-    relationship_sequence: Optional[list[SequenceCriteriaModel]] = Field(
+    node_sequence: Optional[list[SequenceCriteriaNodeModel]] = Field(default_factory=list)
+    relationship_sequence: Optional[list[SequenceCriteriaRelationshipModel]] = Field(
         default_factory=list
     )
 

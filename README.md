@@ -15,7 +15,8 @@ pip install pydantic-neo4j
 from pydantic_neo4j import (PydanticNeo4j, 
                             RelationshipQueryModel,
                             NodeModel,
-                            SequenceCriteriaModel, 
+                            SequenceCriteriaNodeModel,
+                            SequenceCriteriaRelationshipModel,  
                             SequenceQueryModel, 
                             SequenceNodeModel)
 ```
@@ -83,6 +84,7 @@ nodes = await match_util.node_query(criteria={'active': True})
 ```
 ___
 + Query the graph for a single relationship. Lets find a manufacturer that produces a red design
++ This will be depreciated soon, use sequence query instead
 ```python
 query = RelationshipQueryModel(
     start_node_name="Manufacturer",
@@ -99,11 +101,11 @@ ___
 ```python
 sequence_query = SequenceQueryModel()
 
-sequence_query.node_sequence.append(SequenceCriteriaModel(name='Manufacturer'))
-sequence_query.relationship_sequence.append(SequenceCriteriaModel()) # a relationship with no criteria
-sequence_query.node_sequence.append(SequenceCriteriaModel() # a node with no criteria specified
-sequence_query.relationship_sequence.append(SequenceCriteriaModel()) #a realtoinship with no criteria
-sequence_query.node_sequence.append(SequenceCriteriaModel(component_type="widget", 
+sequence_query.node_sequence.append(SequenceCriteriaNodeModel(name='Manufacturer'))
+sequence_query.relationship_sequence.append(SequenceCriteriaRelationshipModel()) # a relationship with no criteria
+sequence_query.node_sequence.append(SequenceCriteriaNodeModel() # a node with no criteria specified
+sequence_query.relationship_sequence.append(SequenceCriteriaRelationshipModel()) #a realtoinship with no criteria
+sequence_query.node_sequence.append(SequenceCriteriaNodeModel(component_type="widget", 
                                                           include_with_return=True))
 ```
 + The sequence query must always have 1 more node than relationship.
@@ -122,32 +124,9 @@ await database_operations.run_query(query=f"match (n) detach delete n")
 ### Not Implemented
 
 + Update a node
-```python
-nodes = await match_util.node_query(name='Manufacturer', criteria={name='Acme'})
-for graph_id, node in nodes.items():
-    node.name = "Acme2"
-    await create_util.update_node(node=node)
-```
 ___
-+ Update a relationship
-```python
-    query = RelationshipQueryModel(
-    start_node_name="Manufacturer",
-    start_criteria={},
-    end_node_name="Design",
-    end_criteria={"color": "red"},
-    relationship_name="Produces",
-    relationship_criteria={})
-    result = await match_util.match_relationship(query=query)
-    for graph_id, relationship in result.items():
-        relationship.design_revision = 4
-        await create_util.update_relationship(relationship=relationship)
-```
++ Update a sequence
 ___
 + Delete a node
-```python
-nodes = await match_util.node_query(name='Manufacturer', criteria={name='Acme'})
-for graph_id, node in nodes.items():
-    await create_util.delete_node(node=node)
-```
+___
 

@@ -3,12 +3,18 @@ import importlib
 import random
 import string
 import uuid
+from enum import Enum, auto
 
 import neo4j
 
 from typing import Any, Type
 
-from .graph_base_models import Neo4jModel
+from .graph_base_models import Neo4jModel, NodeModel, RelationshipModel
+
+
+class NeoObjectType(Enum):
+    NODE = auto()
+    RELATIONSHIP = auto()
 
 
 class DatabaseOperations:
@@ -21,6 +27,13 @@ class DatabaseOperations:
             result = await session.run(query, **kwargs)
             eager_results = await result.to_eager_result()
         return eager_results
+
+    @staticmethod
+    def get_object_type(neo_object: Type[Neo4jModel]):
+        if issubclass(neo_object, NodeModel):
+            return NeoObjectType.NODE
+        elif issubclass(neo_object, RelationshipModel):
+            return NeoObjectType.RELATIONSHIP
 
     @staticmethod
     def str_to_class(model: Type[Neo4jModel], **kwargs) -> Any | None:
