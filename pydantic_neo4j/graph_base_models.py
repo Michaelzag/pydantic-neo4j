@@ -90,6 +90,7 @@ class SequenceQueryModel(BaseModel):
     )
 
 
+
 class SequenceNodeModel(BaseModel):
     nodes: Optional[dict[str, NodeModel]] = Field(default_factory=dict)
     relationships: Optional[dict[str, RelationshipModel]] = Field(default_factory=dict)

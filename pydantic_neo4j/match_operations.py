@@ -79,7 +79,7 @@ class MatchUtilities:
 
         sequence_query_string = f"{keyword} {start_node_string}"
 
-        #for relationship in sequence_query.relationship_sequence:
+        # for relationship in sequence_query.relationship_sequence:
         while sequence_query.relationship_sequence:
             relationship = sequence_query.relationship_sequence.pop(0)
             relationship_prefix, relationship_string = MatchUtilities.get_sequence_criteria(relationship,
@@ -92,7 +92,7 @@ class MatchUtilities:
 
             next_node = sequence_query.node_sequence.pop(0)
             next_node_prefix, next_node_string = MatchUtilities.get_sequence_criteria(next_node,
-                                                                                NeoObjectType.NODE)
+                                                                                      NeoObjectType.NODE)
 
             if next_node.include_with_return:
                 return_prefixes.append(next_node_prefix)
@@ -103,7 +103,8 @@ class MatchUtilities:
             sequence_query_string = f"{sequence_query_string} RETURN "
             for prefix in return_prefixes:
                 sequence_query_string += f"{prefix}, "
-        return sequence_query_string[:-2]
+            sequence_query_string = sequence_query_string[:-2]
+        return sequence_query_string
 
     def get_node_model(self, element: neo4j.graph) -> Union[NodeModel | None]:
         labels = [label for label in element.labels]
@@ -139,7 +140,7 @@ class MatchUtilities:
             statement: str = "MATCH",
     ) -> dict[uuid.UUID, NodeModel]:
         criteria_string = self.build_criteria_string(
-            criteria=criteria, prefix=node_prefix, criteria_type="node"
+            criteria=criteria, prefix=node_prefix, criteria_type=NeoObjectType.NODE
         )
         node_query = self.get_node_prefix(node_name, node_prefix)
         node_models = {}
@@ -170,7 +171,6 @@ class MatchUtilities:
 
         query = MatchUtilities.build_sequence_query_string(sequence_query)
 
-
         eager_result = await self.database_operations.run_query(query)
         for record in eager_result.records:
             for element in record:
@@ -196,3 +196,32 @@ class MatchUtilities:
             nodes=node_models, relationships=rel_models
         )
         return sequence_return_model
+
+    async def relationship_query(self,
+                                 start_node_name: str = "",
+                                 start_criteria: dict = None,
+                                 end_node_name: str = "",
+                                 end_criteria: dict = None,
+                                 relationship_name: str = "",
+                                 relationship_criteria: dict = None
+                                 ) -> dict[uuid.UUID, RelationshipModel]:
+        start_node = SequenceCriteriaNodeModel(name=start_node_name, criteria=start_criteria, include_with_return=True)
+        end_node = SequenceCriteriaNodeModel(name=end_node_name, criteria=end_criteria, include_with_return=True)
+        relationship_model = SequenceCriteriaRelationshipModel(name=relationship_name, criteria=relationship_criteria)
+        sequence_query = SequenceQueryModel(node_sequence=[start_node, end_node],
+                                            relationship_sequence=[relationship_model])
+        sequence_query_string = MatchUtilities.build_sequence_query_string(sequence_query=sequence_query,
+                                                                           keyword='MATCH')
+        eager_result = await self.database_operations.run_query(sequence_query_string)
+        rel_models = {}
+        for record in eager_result.records:
+            for element in record:
+                if type(element) == neo4j.graph.Relationship:
+                    try:
+                        rel_model = self.get_relationship_model(element)
+                        if rel_model.graph_id not in rel_models:
+                            rel_models[rel_model.graph_id] = rel_model
+                    except Exception as e:
+                        print(f"Relationship add Error: {e}")
+        #print(rel_models)
+        return rel_models
