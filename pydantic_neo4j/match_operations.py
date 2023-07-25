@@ -205,18 +205,27 @@ class MatchUtilities:
                                  relationship_name: str = "",
                                  relationship_criteria: dict = None
                                  ) -> dict[uuid.UUID, RelationshipModel]:
-        start_node = SequenceCriteriaNodeModel(name=start_node_name, criteria=start_criteria, include_with_return=True)
-        end_node = SequenceCriteriaNodeModel(name=end_node_name, criteria=end_criteria, include_with_return=True)
-        relationship_model = SequenceCriteriaRelationshipModel(name=relationship_name, criteria=relationship_criteria)
+        start_node = SequenceCriteriaNodeModel(name=start_node_name,
+                                               criteria=start_criteria,
+                                               include_with_return=True)
+        end_node = SequenceCriteriaNodeModel(name=end_node_name,
+                                             criteria=end_criteria,
+                                             include_with_return=True)
+        relationship_model = SequenceCriteriaRelationshipModel(name=relationship_name,
+                                                               criteria=relationship_criteria,
+                                                               include_with_return=True)
         sequence_query = SequenceQueryModel(node_sequence=[start_node, end_node],
                                             relationship_sequence=[relationship_model])
         sequence_query_string = MatchUtilities.build_sequence_query_string(sequence_query=sequence_query,
                                                                            keyword='MATCH')
+        print(sequence_query_string)
         eager_result = await self.database_operations.run_query(sequence_query_string)
         rel_models = {}
         for record in eager_result.records:
             for element in record:
-                if type(element) == neo4j.graph.Relationship:
+                print(f"element: {element}")
+                if type(element) != neo4j.graph.Node and type(element) != neo4j.graph.Path:
+                    print(element)
                     try:
                         rel_model = self.get_relationship_model(element)
                         if rel_model.graph_id not in rel_models:

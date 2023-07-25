@@ -90,14 +90,13 @@ class CreateUtilities:
     async def match_or_create_node(
         self, model: NodeModel
     ) -> tuple[uuid.UUID, NodeModel]:
-        print(model)
+
         existing_node = await self.match_utilities.node_query(
             node_name=model.__class__.__name__,
             criteria=model.get_required_fields(),
             statement="MATCH",
         )
-        print(model.get_required_fields())
-        print(f"Existing: {existing_node}  ")
+
         if len(existing_node) == 0:
             new_node = await self.create_node(model=model)
             return new_node.graph_id, new_node
@@ -116,7 +115,7 @@ class CreateUtilities:
         end_node_id, end_node = await self.match_or_create_node(
             model=relationship.end_node
         )
-
+        print(relationship.get_required_fields())
         rel_exists = await self.match_utilities.relationship_query(
             start_node_name=start_node.__class__.__name__,
             start_criteria={"graph_id": start_node_id},
@@ -125,6 +124,7 @@ class CreateUtilities:
             relationship_name=relationship.__class__.__name__,
             relationship_criteria=relationship.get_required_fields(),
         )
+        #print(rel_exists)
 
         if len(rel_exists) > 0:
             # todo: make new exceptions

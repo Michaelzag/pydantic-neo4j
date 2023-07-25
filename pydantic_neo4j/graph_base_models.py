@@ -26,7 +26,7 @@ class Neo4jModel(BaseModel):
         """Fields needed for minimum compatibility between create and match modules"""
         fields = {}
         for field, value in self.__class__.model_fields.items():
-            if value.is_required():
+            if value.is_required() and field != "start_node" and field != "end_node":
                 fields[field] = getattr(self, field)
         return fields
 
