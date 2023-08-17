@@ -45,13 +45,17 @@ class DatabaseOperations:
             class_ = getattr(module_, model.__name__)(**kwargs)
         except AttributeError:
             print(f"{model} Class does not exist")
+            return None
         except ImportError:
             print("Module does not exist")
-        return class_ or None
+            return None
+        else:
+            return class_
 
     @staticmethod
     def convert_value(value: Any) -> Any:
         """Wrap values in single quotes if necessary for cypher"""
+        #print(f"Converting type {type(value)} -> {value}")
         if type(value) == str:
             return f"'{value}'"
         if type(value) == uuid.UUID:

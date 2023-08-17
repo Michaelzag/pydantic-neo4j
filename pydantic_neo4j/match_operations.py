@@ -106,7 +106,8 @@ class MatchUtilities:
             sequence_query_string = sequence_query_string[:-2]
         return sequence_query_string
 
-    def get_node_model(self, element: neo4j.graph) -> Union[NodeModel | None]:
+    def get_node_model(self, element: neo4j.graph.Node) -> Union[NodeModel | None]:
+
         labels = [label for label in element.labels]
         model_spec = self.get_model_spec(element)
 
@@ -170,7 +171,7 @@ class MatchUtilities:
             raise ValueError("Each relationship must have a start and end node")
 
         query = MatchUtilities.build_sequence_query_string(sequence_query)
-
+        #print(query)
         eager_result = await self.database_operations.run_query(query)
         for record in eager_result.records:
             for element in record:
@@ -218,14 +219,14 @@ class MatchUtilities:
                                             relationship_sequence=[relationship_model])
         sequence_query_string = MatchUtilities.build_sequence_query_string(sequence_query=sequence_query,
                                                                            keyword='MATCH')
-        print(sequence_query_string)
+
         eager_result = await self.database_operations.run_query(sequence_query_string)
         rel_models = {}
         for record in eager_result.records:
             for element in record:
-                print(f"element: {element}")
+
                 if type(element) != neo4j.graph.Node and type(element) != neo4j.graph.Path:
-                    print(element)
+
                     try:
                         rel_model = self.get_relationship_model(element)
                         if rel_model.graph_id not in rel_models:

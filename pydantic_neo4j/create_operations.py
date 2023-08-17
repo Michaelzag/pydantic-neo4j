@@ -25,7 +25,8 @@ class CreateUtilities:
             print(f"{model} Class does not exist")
         except ImportError:
             print("Module does not exist")
-        return class_ or None
+        else:
+            return class_
 
     @staticmethod
     async def get_create_node_string(model: object, node_prefix: str = "n") -> str:
@@ -115,7 +116,7 @@ class CreateUtilities:
         end_node_id, end_node = await self.match_or_create_node(
             model=relationship.end_node
         )
-        print(relationship.get_required_fields())
+
         rel_exists = await self.match_utilities.relationship_query(
             start_node_name=start_node.__class__.__name__,
             start_criteria={"graph_id": start_node_id},
@@ -138,7 +139,9 @@ class CreateUtilities:
                 start_node=start_node, end_node=end_node, relationship=relationship
             )
             #print(query)
-            await self.database_operations.run_query(query)
+            created_results = await self.database_operations.run_query(query)
+
+            return created_results
 
     async def create_relationships(self, sequence: list[RelationshipModel]):
         for relationship in sequence:

@@ -37,6 +37,9 @@ class Neo4jModel(BaseModel):
                 fields[field] = getattr(self, field)
         return fields
 
+    def get_version_str(self) -> str:
+        return f"v{self.version}"
+
 
 class NodeModel(Neo4jModel):
     def get_fields(self) -> Dict[str, Any]:
@@ -84,11 +87,12 @@ class SequenceCriteriaRelationshipModel(SequenceCriteriaModel):
 
 
 class SequenceQueryModel(BaseModel):
-    node_sequence: Optional[list[SequenceCriteriaNodeModel]] = Field(default_factory=list)
+    node_sequence: Optional[list[SequenceCriteriaNodeModel]] = Field(
+        default_factory=list
+    )
     relationship_sequence: Optional[list[SequenceCriteriaRelationshipModel]] = Field(
         default_factory=list
     )
-
 
 
 class SequenceNodeModel(BaseModel):

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pydantic-neo4j"
-version = "0.3.6"
+version = "0.3.7"
 description = ""
 authors = ["MichaelZag <Michael@MichaelZag.com>"]
 readme = "README.md"
@@ -15,7 +15,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.11"
 pydantic = "^2.0.3"
-neo4j = "^5.10.0"
+neo4j = "^5.11.0"
 
 
 [build-system]
